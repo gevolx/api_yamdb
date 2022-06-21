@@ -1,5 +1,21 @@
 from django.db import models
 
+from users.models import User
+
+
+SCORE = (
+    (1, 1),
+    (2, 2),
+    (3, 3),
+    (4, 4),
+    (5, 5),
+    (6, 6),
+    (7, 7),
+    (8, 8),
+    (9, 9),
+    (10, 10)
+)
+
 
 class Category(models.Model):
     name = models.CharField(
@@ -97,3 +113,27 @@ class GenreTitle(models.Model):
     class Meta:
         verbose_name = 'Произведение и жанр'
         verbose_name_plural = 'Произведения и жанры'
+
+
+class Review(models.Model):
+    title = models.ForeignKey(
+        Title,
+        on_delete=models.CASCADE,
+        related_name='review'
+    )
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='author'
+    )
+    pub_date = models.DateField(
+        auto_now_add=True
+    )
+    text = models.TextField(
+        'Текст Отзыва'
+    )
+    score = models.IntegerField(
+        'Оценка отзыва',
+        choices=SCORE,
+        blank=True
+    )

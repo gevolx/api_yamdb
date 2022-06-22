@@ -5,6 +5,13 @@ from .views import (
     CategoryViewSet, GenreViewSet  # , TitleViewSet
 )
 
+from .views import (
+    CategoryViewSet,
+    GenreViewSet,
+    ReviewViewSet,
+    CommentViewSet,
+    # TitleViewSet
+)
 app_name = 'api'
 
 api_router = DefaultRouter()
@@ -13,6 +20,18 @@ api_router.register(r'users', UsersViewSet)
 api_router.register(r'categories', CategoryViewSet)
 api_router.register(r'genres', GenreViewSet)
 # api_router.register(r'titles', TitleViewSet)
+router = DefaultRouter()
+router.register(r'categories', CategoryViewSet)
+router.register(r'genres', GenreViewSet)
+# router.register(r'titles', TitleViewSet)
+router.register(
+    r'titles/(?P<title_id>[\d]+)/reviews',
+    ReviewViewSet
+)
+router.register(
+    r'titles/(?P<title_id>[\d]+)/reviews/(?P<review_id>[\d]+)/comments',
+    CommentViewSet
+)
 
 urlpatterns = [
     path('v1/', include(api_router.urls)),

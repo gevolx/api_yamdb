@@ -1,10 +1,12 @@
 from django.db.models import Avg
 from django_filters.rest_framework import DjangoFilterBackend
+from django.shortcuts import get_object_or_404
 from rest_framework import filters, viewsets
+from rest_framework.pagination import (PageNumberPagination)
 
-from titles.models import Category, Genre, Title
-from .permissions import IsAdminOrReadOnly
-from .serializers import (CategorySerializer, GenreSerializer, TitleSerializer)
+from titles.models import Category, Genre, Title, Review
+from .permissions import IsAdminOrReadOnly, AuthorOrReadonly
+from .serializers import (CategorySerializer, CommentSerializer, GenreSerializer, TitleSerializer, ReviewSerializer)
                          # ReadOnlyTitleSerializer,)
 from .utils import ListCreateDestroyViewSet
 from .filters import TitlesFilter
@@ -42,3 +44,41 @@ class GenreViewSet(ListCreateDestroyViewSet):
 #         if self.action in ("retrieve", "list"):
 #             return ReadOnlyTitleSerializer
 #         return TitleSerializer
+
+
+class ReviewViewSet(viewsets.ModelViewSet):
+    serializer_class = ReviewSerializer
+    pagination_class = PageNumberPagination
+    permission_classes =(AuthorOrReadonly,)
+
+    def get_queryset(self):
+        title = get_object_or_404(Title, id=self.kwargs.get('title_id'))
+        new_queryset = title.reviews.all()
+        return new_queryset
+
+
+class CommentViewSet(viewsets.ModelViewSet):
+    serializer_class = CommentSerializer
+    pagination_class = PageNumberPagination
+    permission_classes = (AuthorOrReadonly,)
+
+    def get_queryset(self):
+        title = get_object_or_404(Title, id=self.kwargs.get('title_id'))
+        review = get_object_or_404(
+            Review,
+            id=self.kwargs.get('review_id'),
+            title=title
+        )
+        return review.comments.all()
+
+    def perform_create(self, serializer):
+        title = get_object_or_404(Title, id=self.kwargs.get('title_id'))
+        review = get_object_or_404(
+            Review,
+            id=self.kwargs.get('review_id'),
+            title=title
+        )
+        serializer.save(
+            author=self.request.user,
+            review=review
+        )

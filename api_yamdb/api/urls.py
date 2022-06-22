@@ -16,11 +16,11 @@ api_router.register(r'genres', GenreViewSet)
 # api_router.register(r'titles', TitleViewSet)
 api_router.register(
     r'titles/(?P<title_id>[\d]+)/reviews',
-    ReviewViewSet
+    ReviewViewSet, basename='Review'
 )
 api_router.register(
     r'titles/(?P<title_id>[\d]+)/reviews/(?P<review_id>[\d]+)/comments',
-    CommentViewSet
+    CommentViewSet, basename='Comment'
 )
 
 urlpatterns = [

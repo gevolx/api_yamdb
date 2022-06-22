@@ -18,7 +18,7 @@ from .serializers import (
     TitleSerializer, ReviewSerializer
     # ReadOnlyTitleSerializer,
 )
-from .permissions import IsAdminOrReadOnly, AuthorOrReadonly
+from .permissions import IsAdminOrReadOnly, AuthorOrReadonly, IsAdministrator
 from .utils import ListCreateDestroyViewSet
 
 
@@ -55,11 +55,19 @@ class GetTokenView(APIView):
 class UsersViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UsersSerializer
+    permission_classes = (IsAdministrator,)
+    search_fields = ('username',)
 
-    def get_object(self):
-        if self.kwargs.get('pk', None) == 'me':
-            self.kwargs['pk'] = self.request.user.pk
-        return super(UsersViewSet, self).get_object()
+
+# TODO
+# class UsersMeViewSet(viewsets.ModelViewSet):
+#     queryset = User.objects.all()
+#     serializer_class = UsersSerializer
+#
+#     def get_object(self):
+#         if self.kwargs.get('pk', None) == 'me':
+#             self.kwargs['pk'] = self.request.user.pk
+#         return super(UsersMeViewSet, self).get_object()
 
 
 class CategoryViewSet(ListCreateDestroyViewSet):
@@ -78,6 +86,7 @@ class GenreViewSet(ListCreateDestroyViewSet):
     filter_backends = (filters.SearchFilter,)
     search_fields = ("name",)
     lookup_field = "slug"
+
 
 # Нужна модель Review и её атрибут score чтобы запустить этот эндпоинт
 # class TitleViewSet(viewsets.ModelViewSet):
@@ -98,7 +107,7 @@ class GenreViewSet(ListCreateDestroyViewSet):
 class ReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
     pagination_class = PageNumberPagination
-    permission_classes =(AuthorOrReadonly,)
+    permission_classes = (AuthorOrReadonly,)
 
     def get_queryset(self):
         title = get_object_or_404(Title, id=self.kwargs.get('title_id'))

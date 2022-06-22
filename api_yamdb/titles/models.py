@@ -2,7 +2,6 @@ from django.db import models
 
 from users.models import User
 
-
 SCORE = (
     (1, 1),
     (2, 2),

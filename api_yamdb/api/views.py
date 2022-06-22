@@ -1,28 +1,24 @@
+from django.db.models import Avg
+from django_filters.rest_framework import DjangoFilterBackend
+from django.shortcuts import get_object_or_404
+
 from rest_framework import status, viewsets, filters
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.db.models import Avg
-from django_filters.rest_framework import DjangoFilterBackend
-from django.shortcuts import get_object_or_404
-from rest_framework import filters, viewsets
 from rest_framework.pagination import (PageNumberPagination)
 
 from users.models import User
+from titles.models import Category, Genre, Title, Review
 from .helpers import get_token_for_user
 from .serializers import (
     SignUpSerializer, TokenSerializer, UsersSerializer,
-    CategorySerializer, GenreSerializer,
+    CategorySerializer, GenreSerializer, CommentSerializer,
+    TitleSerializer, ReviewSerializer
     # ReadOnlyTitleSerializer,
 )
-
-from titles.models import Category, Genre
-from .permissions import IsAdminOrReadOnly
-from titles.models import Category, Genre, Title, Review
 from .permissions import IsAdminOrReadOnly, AuthorOrReadonly
-from .serializers import (CategorySerializer, CommentSerializer, GenreSerializer, TitleSerializer, ReviewSerializer)
-                         # ReadOnlyTitleSerializer,)
 from .utils import ListCreateDestroyViewSet
 
 

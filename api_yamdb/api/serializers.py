@@ -1,5 +1,4 @@
 from rest_framework import serializers
-
 from .helpers import generate_confirmation_code, send_verification_mail
 from users.models import User
 from titles.models import Category, Genre, Title
@@ -65,6 +64,7 @@ class TitleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Title
         fields = '__all__'
+
 
 # Нужна модель Review и её атрибут score чтобы запустить этот сериалайзер
 # class ReadOnlyTitleSerializer(serializers.ModelSerializer):

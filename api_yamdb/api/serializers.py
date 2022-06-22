@@ -1,8 +1,8 @@
 from rest_framework import serializers
 
-<<<<<<< HEAD
 from .helpers import generate_confirmation_code, send_verification_mail
 from users.models import User
+from titles.models import Category, Genre, Title
 
 
 class SignUpSerializer(serializers.ModelSerializer):
@@ -31,12 +31,9 @@ class UsersSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('username', 'email', 'first_name', 'last_name', 'bio', 'role',)
-=======
-from titles.models import Category, Genre, Title
 
 
 class CategorySerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Category
         exclude = ('id',)
@@ -47,7 +44,6 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class GenreSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Genre
         exclude = ('id',)
@@ -82,4 +78,3 @@ class TitleSerializer(serializers.ModelSerializer):
 #         fields = (
 #             'id', 'name', 'year', 'rating', 'description', 'genre', 'category'
 #         )
->>>>>>> develop

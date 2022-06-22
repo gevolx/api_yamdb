@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-from rest_framework import status, viewsets
+from rest_framework import status, viewsets, filters
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -7,7 +6,15 @@ from rest_framework.views import APIView
 
 from users.models import User
 from .helpers import get_token_for_user
-from .serializers import SignUpSerializer, TokenSerializer, UsersSerializer
+from .serializers import (
+    SignUpSerializer, TokenSerializer, UsersSerializer,
+    CategorySerializer, GenreSerializer,
+    # ReadOnlyTitleSerializer,
+)
+
+from titles.models import Category, Genre
+from .permissions import IsAdminOrReadOnly
+from .utils import ListCreateDestroyViewSet
 
 
 class SignUpView(APIView):
@@ -48,17 +55,6 @@ class UsersViewSet(viewsets.ModelViewSet):
         if self.kwargs.get('pk', None) == 'me':
             self.kwargs['pk'] = self.request.user.pk
         return super(UsersViewSet, self).get_object()
-=======
-from django.db.models import Avg
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters, viewsets
-
-from titles.models import Category, Genre, Title
-from .permissions import IsAdminOrReadOnly
-from .serializers import (CategorySerializer, GenreSerializer, TitleSerializer)
-                         # ReadOnlyTitleSerializer,)
-from .utils import ListCreateDestroyViewSet
-from .filters import TitlesFilter
 
 
 class CategoryViewSet(ListCreateDestroyViewSet):
@@ -78,7 +74,6 @@ class GenreViewSet(ListCreateDestroyViewSet):
     search_fields = ("name",)
     lookup_field = "slug"
 
-
 # Нужна модель Review и её атрибут score чтобы запустить этот эндпоинт
 # class TitleViewSet(viewsets.ModelViewSet):
 #     queryset = Title.objects.all().annotate(
@@ -93,4 +88,3 @@ class GenreViewSet(ListCreateDestroyViewSet):
 #         if self.action in ("retrieve", "list"):
 #             return ReadOnlyTitleSerializer
 #         return TitleSerializer
->>>>>>> develop

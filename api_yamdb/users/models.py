@@ -8,15 +8,25 @@ from .managers import CustomUserManager
 class User(AbstractUser):
     email = models.EmailField(_('email address'), blank=True, unique=True)
 
+    ADMIN = 'admin'
+    MODERATOR = 'moderator'
+    USER = 'user'
+    ROLES = [
+        (ADMIN, 'Administrator'),
+        (MODERATOR, 'Moderator'),
+        (USER, 'User'),
+    ]
+
     bio = models.TextField(
         'Биография',
         blank=True,
     )
 
     role = models.CharField(
-        'Роль',
-        blank=True,
-        max_length=50
+        verbose_name='Роль',
+        max_length=50,
+        choices=ROLES,
+        default=USER
     )
 
     confirmation_code = models.IntegerField(null=True, blank=True)
@@ -27,3 +37,11 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.username
+
+    @property
+    def is_moderator(self):
+        return self.role == self.MODERATOR
+
+    @property
+    def is_admin(self):
+        return self.role == self.ADMIN

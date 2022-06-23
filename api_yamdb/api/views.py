@@ -45,8 +45,8 @@ class GetTokenView(APIView):
             if user.confirmation_code != confirmation_code:
                 return Response({'Error': f'Confirmation code is not valid!'},
                                 status=status.HTTP_400_BAD_REQUEST)
-            if not user.is_active:
-                user.is_active = True
+            if not user.api_token:
+                user.api_token = True
                 user.save()
             return Response(get_token_for_user(user), status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -57,7 +57,7 @@ class UsersViewSet(viewsets.ModelViewSet):
     serializer_class = UsersSerializer
     permission_classes = (IsAdministrator,)
     search_fields = ('username',)
-
+    pagination_class = PageNumberPagination
 
 # TODO
 # class UsersMeViewSet(viewsets.ModelViewSet):

@@ -10,16 +10,42 @@ class SignUpSerializer(serializers.ModelSerializer):
         model = User
         fields = ('username', 'email',)
         extra_kwargs = {
-            'username': {'required': True},
-            'email': {'required': True}
+            'username': {
+                "validators": [],
+            },
+            'email': {
+                "validators": [],
+            }
         }
+
+    def validate(self, data):
+        if data['username'] == 'me':
+            raise serializers.ValidationError('Unavailable username!')
+        exists_user = User.objects.filter(username=data['username'], email=data['email']).first()
+        if exists_user:
+            if not exists_user.api_token:
+                return data
+            else:
+                raise serializers.ValidationError('User already registered!')
+        elif User.objects.filter(username=data['username']).exists():
+            raise serializers.ValidationError('Username already exist!')
+        elif User.objects.filter(email=data['email']).exists():
+            raise serializers.ValidationError('Email already exist!')
+        return data
 
     def create(self, validated_data):
         confirmation_code = generate_confirmation_code()
-        user = User.objects.create_user(**validated_data,
-                                        confirmation_code=confirmation_code)
-        send_verification_mail(validated_data['email'], confirmation_code)
-        return user
+        email = validated_data['email']
+        exists_user = User.objects.filter(username=validated_data['username'], email=email).first()
+        if not exists_user:
+            send_verification_mail(email, confirmation_code)
+            return User.objects.create_user(**validated_data,
+                                            confirmation_code=confirmation_code)
+        if not exists_user.api_token:
+            exists_user.confirmation_code = confirmation_code
+            exists_user.save()
+        send_verification_mail(email, confirmation_code)
+        return exists_user
 
 
 class TokenSerializer(serializers.Serializer):
@@ -31,6 +57,10 @@ class UsersSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('username', 'email', 'first_name', 'last_name', 'bio', 'role',)
+        extra_kwargs = {
+            'username': {'required': True},
+            'email': {'required': True}
+        }
 
 
 class CategorySerializer(serializers.ModelSerializer):

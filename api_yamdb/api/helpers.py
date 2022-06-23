@@ -1,6 +1,6 @@
 import random
 from django.core.mail import send_mail
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import AccessToken
 
 from users.models import User
 
@@ -18,7 +18,8 @@ def send_verification_mail(email: str, confirmation_code: int):
 
 
 def get_token_for_user(user: User):
-    refresh = RefreshToken.for_user(user)
+    token = AccessToken.for_user(user)
+
     return {
-        'token': str(refresh.access_token)
+        'token': str(token)
     }

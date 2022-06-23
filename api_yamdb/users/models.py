@@ -2,20 +2,12 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+from .apps import ROLES, USER, ADMIN, MODERATOR
 from .managers import CustomUserManager
 
 
 class User(AbstractUser):
-    email = models.EmailField(_('email address'), blank=True, unique=True)
-
-    ADMIN = 'admin'
-    MODERATOR = 'moderator'
-    USER = 'user'
-    ROLES = [
-        (ADMIN, 'Administrator'),
-        (MODERATOR, 'Moderator'),
-        (USER, 'User'),
-    ]
+    email = models.EmailField(_('email address'), blank=False, unique=True)
 
     bio = models.TextField(
         'Биография',
@@ -28,10 +20,11 @@ class User(AbstractUser):
         choices=ROLES,
         default=USER
     )
+    first_name = models.CharField(_('first name'), max_length=150, blank=True)
 
     confirmation_code = models.IntegerField(null=True, blank=True)
 
-    is_active = models.BooleanField(_('active'), default=False)
+    api_token = models.BooleanField(default=False)
 
     objects = CustomUserManager()
 
@@ -40,8 +33,8 @@ class User(AbstractUser):
 
     @property
     def is_moderator(self):
-        return self.role == self.MODERATOR
+        return self.role == MODERATOR
 
     @property
     def is_admin(self):
-        return self.role == self.ADMIN
+        return self.role == ADMIN

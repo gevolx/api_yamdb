@@ -13,7 +13,7 @@ from users.apps import USER
 from users.models import User
 from titles.models import Category, Genre, Title, Review
 from .filters import TitlesFilter
-from .helpers import get_token_for_user
+from .utils import get_token_for_user
 from .serializers import (
     SignUpSerializer, TokenSerializer, UsersSerializer,
     CategorySerializer, GenreSerializer, CommentSerializer,

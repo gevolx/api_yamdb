@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .helpers import generate_confirmation_code, send_verification_mail
+from .utils import generate_confirmation_code, send_verification_mail
 from users.models import User
 from titles.models import SCORE, Category, Comment, Genre, Title, Review
 

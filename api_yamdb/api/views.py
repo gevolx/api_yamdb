@@ -2,9 +2,10 @@ from django.db.models import Avg
 from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
 
-from rest_framework import status, viewsets, filters
+from rest_framework import status, viewsets, filters, mixins, serializers
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import AllowAny
+from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.pagination import (PageNumberPagination)
@@ -53,21 +54,18 @@ class GetTokenView(APIView):
 
 
 class UsersViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
+    queryset = User.objects.all().order_by('id')
     serializer_class = UsersSerializer
     permission_classes = (IsAdministrator,)
-    search_fields = ('username',)
+    lookup_field = 'username'
     pagination_class = PageNumberPagination
 
-# TODO
-# class UsersMeViewSet(viewsets.ModelViewSet):
-#     queryset = User.objects.all()
-#     serializer_class = UsersSerializer
-#
-#     def get_object(self):
-#         if self.kwargs.get('pk', None) == 'me':
-#             self.kwargs['pk'] = self.request.user.pk
-#         return super(UsersMeViewSet, self).get_object()
+
+class CurrentUserView(APIView):
+
+    def get(self, request):
+        serializer = UsersSerializer(self.request.user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class CategoryViewSet(ListCreateDestroyViewSet):

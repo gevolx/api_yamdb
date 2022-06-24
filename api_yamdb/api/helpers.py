@@ -11,7 +11,8 @@ def generate_confirmation_code():
 
 def send_verification_mail(email: str, confirmation_code: int):
     subject = 'YaMDB confirmation code'
-    message = f'Your confirmation code:\n{confirmation_code}\nThanks for using YaMDB.'
+    message = (f'Your confirmation code:\n{confirmation_code}\n'
+               f'Thanks for using YaMDB.')
     from_email = 'support@yamdb.ru'
     recipient_list = [email, ]
     send_mail(subject, message, from_email, recipient_list)

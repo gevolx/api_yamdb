@@ -44,12 +44,13 @@ class GetTokenView(APIView):
             confirmation_code = serializer.validated_data['confirmation_code']
             user = get_object_or_404(User, username=username)
             if user.confirmation_code != confirmation_code:
-                return Response({'Error': f'Confirmation code is not valid!'},
+                return Response({'Error': 'Confirmation code is not valid!'},
                                 status=status.HTTP_400_BAD_REQUEST)
             if not user.api_token:
                 user.api_token = True
                 user.save()
-            return Response(get_token_for_user(user), status=status.HTTP_200_OK)
+            return Response(get_token_for_user(user),
+                            status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -69,7 +70,8 @@ class CurrentUserView(APIView):
 
     def patch(self, request):
         user_obj = User.objects.get(id=self.request.user.id)
-        serializer = UsersSerializer(user_obj, data=self.request.data, partial=True)
+        serializer = UsersSerializer(user_obj, data=self.request.data,
+                                     partial=True)
         if serializer.is_valid():
             if user_obj.is_user:
                 serializer.validated_data['role'] = USER

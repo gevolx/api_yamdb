@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from .helpers import generate_confirmation_code, send_verification_mail
 from users.models import User
-from titles.models import Category, Genre, Title
 from titles.models import SCORE, Category, Comment, Genre, Title, Review
 
 
@@ -96,19 +95,18 @@ class TitleSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-# Нужна модель Review и её атрибут score чтобы запустить этот сериалайзер
-# class ReadOnlyTitleSerializer(serializers.ModelSerializer):
-#     rating = serializers.IntegerField(
-#         source='reviews__score__avg', read_only=True
-#     )
-#     genre = GenreSerializer(many=True)
-#     category = CategorySerializer()
-#
-#     class Meta:
-#         model = Title
-#         fields = (
-#             'id', 'name', 'year', 'rating', 'description', 'genre', 'category'
-#         )
+class ReadOnlyTitleSerializer(serializers.ModelSerializer):
+    rating = serializers.IntegerField(
+        source='reviews__score__avg', read_only=True
+    )
+    genre = GenreSerializer(many=True)
+    category = CategorySerializer()
+
+    class Meta:
+        model = Title
+        fields = (
+            'id', 'name', 'year', 'rating', 'description', 'genre', 'category'
+        )
 
 
 class ReviewSerializer(serializers.ModelSerializer):

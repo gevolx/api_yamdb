@@ -2,22 +2,22 @@ from django.db.models import Avg
 from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
 
-from rest_framework import status, viewsets, filters, mixins, serializers
+from rest_framework import status, viewsets, filters
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import AllowAny
-from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.pagination import (PageNumberPagination)
 
+from users.apps import USER
 from users.models import User
 from titles.models import Category, Genre, Title, Review
+from .filters import TitlesFilter
 from .helpers import get_token_for_user
 from .serializers import (
     SignUpSerializer, TokenSerializer, UsersSerializer,
     CategorySerializer, GenreSerializer, CommentSerializer,
-    TitleSerializer, ReviewSerializer
-    # ReadOnlyTitleSerializer,
+    TitleSerializer, ReviewSerializer, ReadOnlyTitleSerializer
 )
 from .permissions import IsAdminOrReadOnly, AuthorOrReadonly, IsAdministrator
 from .utils import ListCreateDestroyViewSet
@@ -67,6 +67,16 @@ class CurrentUserView(APIView):
         serializer = UsersSerializer(self.request.user)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    def patch(self, request):
+        user_obj = User.objects.get(id=self.request.user.id)
+        serializer = UsersSerializer(user_obj, data=self.request.data, partial=True)
+        if serializer.is_valid():
+            if user_obj.is_user:
+                serializer.validated_data['role'] = USER
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class CategoryViewSet(ListCreateDestroyViewSet):
     queryset = Category.objects.all()
@@ -86,20 +96,19 @@ class GenreViewSet(ListCreateDestroyViewSet):
     lookup_field = "slug"
 
 
-# Нужна модель Review и её атрибут score чтобы запустить этот эндпоинт
-# class TitleViewSet(viewsets.ModelViewSet):
-#     queryset = Title.objects.all().annotate(
-#         Avg("reviews__score")
-#     ).order_by("name")
-#     serializer_class = TitleSerializer
-#     permission_classes = (IsAdminOrReadOnly,)
-#     filter_backends = [DjangoFilterBackend]
-#     filterset_class = TitlesFilter
-#
-#     def get_serializer_class(self):
-#         if self.action in ("retrieve", "list"):
-#             return ReadOnlyTitleSerializer
-#         return TitleSerializer
+class TitleViewSet(viewsets.ModelViewSet):
+    queryset = Title.objects.all().annotate(
+        Avg("review__score")
+    ).order_by("name")
+    serializer_class = TitleSerializer
+    permission_classes = (IsAdminOrReadOnly,)
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = TitlesFilter
+
+    def get_serializer_class(self):
+        if self.action in ("retrieve", "list"):
+            return ReadOnlyTitleSerializer
+        return TitleSerializer
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
@@ -109,7 +118,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         title = get_object_or_404(Title, id=self.kwargs.get('title_id'))
-        new_queryset = title.reviews.all()
+        new_queryset = title.review.all()
         return new_queryset
 
 
@@ -125,7 +134,7 @@ class CommentViewSet(viewsets.ModelViewSet):
             id=self.kwargs.get('review_id'),
             title=title
         )
-        return review.comments.all()
+        return review.comment.all()
 
     def perform_create(self, serializer):
         title = get_object_or_404(Title, id=self.kwargs.get('title_id'))

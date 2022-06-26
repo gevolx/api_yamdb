@@ -1,20 +1,7 @@
 from django.db import models
 
 from users.models import User
-from titles.models import Title
-
-SCORE = (
-    (1, 1),
-    (2, 2),
-    (3, 3),
-    (4, 4),
-    (5, 5),
-    (6, 6),
-    (7, 7),
-    (8, 8),
-    (9, 9),
-    (10, 10)
-)
+from titles.models import Title, SCORE
 
 
 class Review(models.Model):
@@ -48,7 +35,8 @@ class Review(models.Model):
         verbose_name = 'Отзыв'
         verbose_name_plural = 'Отзывы'
         constraints = [
-            models.UniqueConstraint(fields=['title', 'author'], name='uniq_review')
+            models.UniqueConstraint(fields=['title', 'author'],
+                                    name='uniq_review')
         ]
 
 

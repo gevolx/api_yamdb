@@ -20,7 +20,9 @@ from .serializers import (
     CategorySerializer, GenreSerializer, CommentSerializer,
     TitleSerializer, ReviewSerializer, ReadOnlyTitleSerializer
 )
-from .permissions import IsAdminOrReadOnly, IsAdministrator, IsAdminModeratorOrReadOnly
+from .permissions import (
+    IsAdminOrReadOnly, IsAdministrator, IsAdminModeratorOrReadOnly
+)
 from .utils import ListCreateDestroyViewSet
 
 

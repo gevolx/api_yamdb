@@ -1,6 +1,5 @@
 from django.db import models
 
-
 SCORE = (
     (1, 1),
     (2, 2),
@@ -111,5 +110,3 @@ class GenreTitle(models.Model):
     class Meta:
         verbose_name = 'Произведение и жанр'
         verbose_name_plural = 'Произведения и жанры'
-
-

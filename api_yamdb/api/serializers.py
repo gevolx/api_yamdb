@@ -1,4 +1,3 @@
-from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from .utils import generate_confirmation_code, send_verification_mail
 from users.models import User

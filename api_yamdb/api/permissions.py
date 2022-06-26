@@ -1,12 +1,10 @@
 from rest_framework import permissions
 from rest_framework.exceptions import PermissionDenied
 
-
 ERROR_MESSAGES = {
     'update_denied': 'Изменение чужого контента запрещено!',
     'delete_denied': 'Удаление чужого контента запрещено!'
 }
-
 
 
 class IsAdminOrReadOnly(permissions.BasePermission):
@@ -34,19 +32,14 @@ class AuthorOrReadonly(permissions.BasePermission):
 class IsAdminModeratorOrReadOnly(permissions.BasePermission):
 
     def has_permission(self, request, view):
-        return (
-            request.method in permissions.SAFE_METHODS
-            or request.user.is_authenticated
-        )
+        return (request.method in permissions.SAFE_METHODS
+                or request.user.is_authenticated)
 
     def has_object_permission(self, request, view, obj):
-        return (
-            request.method in permissions.SAFE_METHODS
-            or request.user.is_admin
-            or request.user.is_moderator
-            or obj.author == request.user
-        )
-
+        return (request.method in permissions.SAFE_METHODS
+                or request.user.is_admin
+                or request.user.is_moderator
+                or obj.author == request.user)
 
 
 class IsAdministrator(permissions.BasePermission):

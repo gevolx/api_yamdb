@@ -1,7 +1,9 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from .utils import generate_confirmation_code, send_verification_mail
 from users.models import User
-from titles.models import SCORE, Category, Comment, Genre, Title, Review
+from titles.models import SCORE, Category, Genre, Title
+from reviews.models import Comment, Review
 
 
 class SignUpSerializer(serializers.ModelSerializer):
@@ -130,19 +132,23 @@ class ReviewSerializer(serializers.ModelSerializer):
     score = serializers.ChoiceField(
         choices=SCORE
     )
+    author_id = serializers.StringRelatedField(
+        read_only=True,
+        default=serializers.CurrentUserDefault()
+    )
 
     class Meta:
         model = Review
-        fields = ('id', 'author', 'pub_date', 'text', 'score')
+        fields = ('id', 'author', 'pub_date', 'text', 'score', 'author_id')
 
     def validate(self, data):
         if self.context['request'].method != 'POST':
             return data
-        title = self.context['request']
+        title = self.context['request'].parser_context['kwargs']['title_id']
         author = self.context['request'].user
         if Review.objects.filter(title=title, author=author).exists():
             raise serializers.ValidationError(
-                'Ранее вы уже оставляли отзыв данному произведению.'
+                'Вы уже оставили отзыв этому произведению.'
             )
         return data
 

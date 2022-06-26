@@ -11,7 +11,8 @@ from rest_framework.pagination import (PageNumberPagination)
 
 from users.apps import USER
 from users.models import User
-from titles.models import Category, Genre, Title, Review
+from titles.models import Category, Genre, Title
+from reviews.models import Review
 from .filters import TitlesFilter
 from .utils import get_token_for_user
 from .serializers import (

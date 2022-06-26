@@ -112,7 +112,7 @@ class TitleSerializer(serializers.ModelSerializer):
 
 class ReadOnlyTitleSerializer(serializers.ModelSerializer):
     rating = serializers.IntegerField(
-        source='reviews__score__avg', read_only=True
+        source='review__score__avg', read_only=True
     )
     genre = GenreSerializer(many=True)
     category = CategorySerializer()

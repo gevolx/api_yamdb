@@ -44,8 +44,12 @@ class Review(models.Model):
         return self.text
 
     class Meta:
+        ordering = ['-id']
         verbose_name = 'Отзыв'
         verbose_name_plural = 'Отзывы'
+        constraints = [
+            models.UniqueConstraint(fields=['title', 'author'], name='uniq_review')
+        ]
 
 
 class Comment(models.Model):
@@ -69,5 +73,6 @@ class Comment(models.Model):
         return self.text
 
     class Meta:
+        ordering = ['-id']
         verbose_name = 'Комментарий'
         verbose_name_plural = 'Комментарии'

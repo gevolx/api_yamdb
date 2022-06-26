@@ -20,7 +20,7 @@ from .serializers import (
     CategorySerializer, GenreSerializer, CommentSerializer,
     TitleSerializer, ReviewSerializer, ReadOnlyTitleSerializer
 )
-from .permissions import IsAdminOrReadOnly, AuthorOrReadonly, IsAdministrator
+from .permissions import IsAdminOrReadOnly, IsAdministrator, IsAdminModeratorOrReadOnly
 from .utils import ListCreateDestroyViewSet
 
 
@@ -117,18 +117,22 @@ class TitleViewSet(viewsets.ModelViewSet):
 class ReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
     pagination_class = PageNumberPagination
-    permission_classes = (AuthorOrReadonly,)
+    permission_classes = (IsAdminModeratorOrReadOnly,)
 
     def get_queryset(self):
         title = get_object_or_404(Title, id=self.kwargs.get('title_id'))
         new_queryset = title.review.all()
         return new_queryset
 
+    def perform_create(self, serializer):
+        title_id = get_object_or_404(Title, id=self.kwargs.get('title_id'))
+        serializer.save(author=self.request.user, title=title_id)
+
 
 class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
     pagination_class = PageNumberPagination
-    permission_classes = (AuthorOrReadonly,)
+    permission_classes = (IsAdminModeratorOrReadOnly,)
 
     def get_queryset(self):
         title = get_object_or_404(Title, id=self.kwargs.get('title_id'))

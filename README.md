@@ -1,5 +1,5 @@
 ### API Yamdb
-REST API для проекта Yamdb на Django. Позволяет выполнять CRUD API запросы.
+REST API для проекта Yamdb. Позволяет выполнять CRUD API запросы.
 
 ### Установка. Как запустить проект:
 
@@ -83,3 +83,11 @@ http://127.0.0.1:8000/api/v1/titles/{title_id}/reviews/
 ```
 http://127.0.0.1:8000/redoc
 ```
+
+### Используемые технологии
+Python 3.10, Django 2.2 (django rest framework + simplejwt)  
+
+### Авторы
+[gevolx](https://github.com/gevolx)
+[NiroTime](https://github.com/NiroTime)
+[alexkopss](https://github.com/alexkopss)

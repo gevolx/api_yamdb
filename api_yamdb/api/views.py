@@ -55,7 +55,7 @@ class GetTokenView(APIView):
 
 
 class UsersViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all().order_by('id')
+    queryset = User.objects.all()
     serializer_class = UsersSerializer
     permission_classes = (IsAdministrator,)
     lookup_field = 'username'

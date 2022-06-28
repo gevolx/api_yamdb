@@ -22,11 +22,14 @@ class User(AbstractUser):
     )
     first_name = models.CharField(_('first name'), max_length=150, blank=True)
 
-    confirmation_code = models.IntegerField(null=True, blank=True)
+    confirmation_code = models.CharField(max_length=36, null=True, blank=True)
 
     api_token = models.BooleanField(default=False)
 
     objects = CustomUserManager()
+
+    class Meta:
+        ordering = ['-id']
 
     def __str__(self):
         return self.username

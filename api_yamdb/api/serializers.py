@@ -28,12 +28,11 @@ class SignUpSerializer(serializers.ModelSerializer):
         ).first()
         if exists_user:
             if not exists_user.api_token:
-                return data
-            else:
                 raise serializers.ValidationError('User already registered!')
-        elif User.objects.filter(username=data['username']).exists():
+            return data
+        if User.objects.filter(username=data['username']).exists():
             raise serializers.ValidationError('Username already exist!')
-        elif User.objects.filter(email=data['email']).exists():
+        if User.objects.filter(email=data['email']).exists():
             raise serializers.ValidationError('Email already exist!')
         return data
 

@@ -1,4 +1,4 @@
-import random
+import uuid
 
 from django.core.mail import send_mail
 from rest_framework import mixins, viewsets
@@ -8,7 +8,7 @@ from users.models import User
 
 
 def generate_confirmation_code():
-    return int(''.join([str(random.randint(0, 10)) for _ in range(6)]))
+    return uuid.uuid4()
 
 
 def send_verification_mail(email: str, confirmation_code: int):

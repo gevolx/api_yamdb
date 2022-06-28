@@ -1,4 +1,6 @@
 from django.db import models
+from django.core.validators import MaxValueValidator, MinValueValidator
+
 
 SCORE = (
     (1, 1),
@@ -45,13 +47,13 @@ class Genre(models.Model):
         unique=True
     )
 
-    def __str__(self):
-        return self.name
-
     class Meta:
         verbose_name = 'Жанр'
         verbose_name_plural = 'Жанры'
         ordering = ['name']
+
+    def __str__(self):
+        return self.name
 
 
 class Title(models.Model):
@@ -59,7 +61,8 @@ class Title(models.Model):
         verbose_name='Название',
         max_length=200
     )
-    year = models.IntegerField(
+    year = models.PositiveSmallIntegerField(
+        validators=[MinValueValidator(1900), MaxValueValidator(3999)],
         verbose_name='Дата выхода',
     )
     description = models.TextField(
@@ -98,11 +101,15 @@ class GenreTitle(models.Model):
     title = models.ForeignKey(
         Title,
         verbose_name='Произведение',
-        on_delete=models.CASCADE)
+        null=True,
+        on_delete=models.SET_NULL,
+    )
     genre = models.ForeignKey(
         Genre,
         verbose_name='Жанр',
-        on_delete=models.CASCADE)
+        null=True,
+        on_delete=models.SET_NULL,
+    )
 
     def __str__(self):
         return f'{self.title}, жанр - {self.genre}'

@@ -1,29 +1,26 @@
 from django.db.models import Avg
-from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
-
-from rest_framework import status, viewsets, filters
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters, status, viewsets
 from rest_framework.generics import get_object_or_404
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.pagination import (PageNumberPagination)
 
+from reviews.models import Review
+from titles.models import Category, Genre, Title
 from users.apps import USER
 from users.models import User
-from titles.models import Category, Genre, Title
-from reviews.models import Review
+
 from .filters import TitlesFilter
-from .utils import get_token_for_user
-from .serializers import (
-    SignUpSerializer, TokenSerializer, UsersSerializer,
-    CategorySerializer, GenreSerializer, CommentSerializer,
-    TitleSerializer, ReviewSerializer, ReadOnlyTitleSerializer
-)
-from .permissions import (
-    IsAdminOrReadOnly, IsAdministrator, IsAdminModeratorOrReadOnly
-)
-from .utils import ListCreateDestroyViewSet
+from .permissions import (IsAdministrator, IsAdminModeratorOrReadOnly,
+                          IsAdminOrReadOnly)
+from .serializers import (CategorySerializer, CommentSerializer,
+                          GenreSerializer, ReadOnlyTitleSerializer,
+                          ReviewSerializer, SignUpSerializer, TitleSerializer,
+                          TokenSerializer, UsersSerializer)
+from .utils import ListCreateDestroyViewSet, get_token_for_user
 
 
 class SignUpView(APIView):

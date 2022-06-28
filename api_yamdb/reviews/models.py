@@ -1,7 +1,7 @@
 from django.db import models
 
+from titles.models import SCORE, Title
 from users.models import User
-from titles.models import Title, SCORE
 
 
 class Review(models.Model):

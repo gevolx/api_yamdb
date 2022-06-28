@@ -1,8 +1,10 @@
 from rest_framework import serializers
-from .utils import generate_confirmation_code, send_verification_mail
-from users.models import User
-from titles.models import SCORE, Category, Genre, Title
+
 from reviews.models import Comment, Review
+from titles.models import SCORE, Category, Genre, Title
+from users.models import User
+
+from .utils import generate_confirmation_code, send_verification_mail
 
 
 class SignUpSerializer(serializers.ModelSerializer):

@@ -2,7 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from .apps import ROLES, USER, ADMIN, MODERATOR
+from .apps import ADMIN, MODERATOR, ROLES, USER
 from .managers import CustomUserManager
 
 

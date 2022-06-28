@@ -1,7 +1,8 @@
 import random
+
 from django.core.mail import send_mail
-from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework import mixins, viewsets
+from rest_framework_simplejwt.tokens import AccessToken
 
 from users.models import User
 

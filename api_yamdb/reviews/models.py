@@ -20,15 +20,12 @@ class Review(models.Model):
         auto_now_add=True
     )
     text = models.TextField(
-        'Текст Отзыва'
+        verbose_name='Текст Отзыва'
     )
     score = models.IntegerField(
-        'Оценка отзыва',
+        verbose_name='Оценка отзыва',
         choices=SCORE,
-        validators=[
-            MinValueValidator(1, 'Поставьте оценку от 1 до 10'),
-            MaxValueValidator(10, 'Поставьте оценку от 1 до 10')
-        ],
+        validators=[MinValueValidator(1), MaxValueValidator(10)],
         blank=True
     )
 
@@ -59,13 +56,13 @@ class Comment(models.Model):
         auto_now_add=True
     )
     text = models.TextField(
-        'Текст комментария'
+        verbose_name='Текст комментария'
     )
-
-    def __str__(self):
-        return self.text
 
     class Meta:
         ordering = ['-id']
         verbose_name = 'Комментарий'
         verbose_name_plural = 'Комментарии'
+
+    def __str__(self):
+        return self.text

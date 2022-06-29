@@ -20,6 +20,7 @@ class User(AbstractUser):
         choices=ROLES,
         default=USER
     )
+
     first_name = models.CharField(_('first name'), max_length=150, blank=True)
 
     confirmation_code = models.CharField(max_length=36, null=True, blank=True)
